@@ -1,0 +1,15 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+data/
+data/businesses.rds
+data/members_council.rds
+data/motions_final.rds
+data/motions_polarization.csv
+data/roles.rds
+data/statuses.rds
+data/votes.rds
+data/votings.rds
+business_50_51/
+voting_50_51/
