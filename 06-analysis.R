@@ -3,6 +3,11 @@ library(tidyverse)
 motions_polarization <- readRDS("data/motions_polarization_with_lr_ap.rds")
 
 # # #################################################################################
+# summary
+
+summary(motions_polarization)
+
+# # #################################################################################
 # control variable FederalCouncilProposalText
 
 unique_values <- unique(motions_polarization$FederalCouncilProposalText)
@@ -11,8 +16,6 @@ print(unique_values)
 # Assuming 'your_dataframe' is your dataframe and 'FederalCouncilProposalText' is your column
 motions_polarization$FederalCouncilProposalEncoded <- ifelse(
   motions_polarization$FederalCouncilProposalText == "Der Bundesrat beantragt die Annahme der Motion.", 1, 0)
-
-
 
 # # #################################################################################
 # testing
