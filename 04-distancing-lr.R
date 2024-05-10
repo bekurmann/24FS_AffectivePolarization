@@ -93,6 +93,7 @@ calculate_distance_for_involved_parties <- function(involved_parties, legislativ
 # calculate_distance_for_involved_parties("Mitte, FDP, SP", "50")
 # calculate_distance_for_involved_parties("SVP", "50")
 
+# create column
 motions_polarization <- motions_polarization %>%
   rowwise() %>%  # Apply the function to each row individually
   mutate(lr_distance_total = calculate_distance_for_involved_parties(

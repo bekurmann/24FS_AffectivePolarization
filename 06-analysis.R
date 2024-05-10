@@ -1,6 +1,6 @@
 library(tidyverse)
 
-motions <- readRDS("data/motions_polarization_with_lr_ap.rds")
+motions_polarization <- readRDS("data/motions_polarization_with_lr_ap.rds")
 
 
 # # #################################################################################
@@ -20,5 +20,42 @@ motions_polarization %>%
     x = "Normalized Outside LR Distance",
     y = "'Yes' votes",
     title = "Scatter Plot of normalized LR Distance vs. Yes Votes",
+    color = "failed/passed"
+  )
+
+lm2 <- lm(motions_polarization$yes_votes ~ motions_polarization$ap_score_normalized)
+summary(lm2)
+
+motions_polarization %>%
+  ggplot(aes(x = ap_score_normalized, y = yes_votes, color = passed)) +
+  geom_point(alpha = 0.7, size = 3) +
+  geom_smooth(method = "lm", se = TRUE,
+              aes(group = 1),
+              color = "black") +
+  theme_minimal() +
+  labs(
+    x = "Normalized AP Score",
+    y = "'Yes' votes",
+    title = "Scatter Plot of normalized AP Score vs. Yes Votes",
+    color = "failed/passed"
+  )
+
+
+lm3 <- lm(motions_polarization$yes_votes ~ 
+            motions_polarization$ap_score_normalized + 
+            motions_polarization$lr_distance_normalized)
+summary(lm3)
+
+motions_polarization %>%
+  ggplot(aes(x = lr_distance_normalized, y = ap_score_normalized, color = passed)) +
+  geom_point(alpha = 0.7, size = 3) +
+  geom_smooth(method = "lm", se = TRUE,
+              aes(group = 1),
+              color = "black") +
+  theme_minimal() +
+  labs(
+    x = "Normalized L/R Distance",
+    y = "Normalized AP Score",
+    title = "Scatter Plot of normalized L/R Distance vs. normalized AP Score",
     color = "failed/passed"
   )
