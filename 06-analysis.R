@@ -31,9 +31,9 @@ motions_polarization %>%
               color = "black") +
   theme_minimal() +
   labs(
-    x = "Normalized Outside LR Distance",
+    x = "Normalized LR Distance",
     y = "'Yes' votes",
-    title = "Scatter Plot of normalized LR Distance vs. Yes Votes",
+    title = "Yes Votes ~ Normalized LR Distance",
     color = "failed/passed"
   )
 
@@ -50,7 +50,7 @@ motions_polarization %>%
   labs(
     x = "Normalized AP Score",
     y = "'Yes' votes",
-    title = "Scatter Plot of normalized AP Score vs. Yes Votes",
+    title = "Yes Votes ~ Normalized AP Acore",
     color = "failed/passed"
   )
 
@@ -72,6 +72,7 @@ motions_polarization %>%
   labs(
     x = "Normalized L/R Distance",
     y = "Normalized AP Score",
-    title = "Scatter Plot of normalized L/R Distance vs. normalized AP Score",
+    title = "Normalized AP Score ~ Normalized L/R Distance",
     color = "failed/passed"
   )
+
