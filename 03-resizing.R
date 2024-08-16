@@ -67,6 +67,7 @@ motions_polarization <- motions_with_vote_small %>%
     BusinessID,
     BusinessTitle,
     SubmittedText,
+    TagNames,
     SubmittedBy,
     SubmissionDate,
     SubmissionCouncil,

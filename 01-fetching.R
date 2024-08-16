@@ -8,6 +8,10 @@ get_tables()
 get_variables("Business")
 demo_business <- get_glimpse("Business")
 
+# get tags
+get_variables("Tags")
+all_tags <- get_data("Tags", Language = "DE")
+
 # #################################################################################
 # functions
 # Function to download and save business data by session, with added robustness and delay
