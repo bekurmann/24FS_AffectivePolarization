@@ -105,3 +105,14 @@ calculate_vif <- function(model) {
 # Calculate VIF for lm3
 vif_lm3 <- calculate_vif(lm3)
 print(vif_lm3)
+
+# Subset the independent variables used in lm3
+independent_vars <- motions_polarization %>%
+  select(ap_score_normalized, lr_distance_normalized, FederalCouncilProposalEncoded, multiple_councils)
+
+# Calculate and print the correlation matrix
+cor_matrix <- cor(independent_vars, use = "complete.obs")
+print(cor_matrix)
+
+
+
