@@ -19,6 +19,11 @@ motions_polarization$FederalCouncilProposalEncoded <- ifelse(
   motions_polarization$FederalCouncilProposalText == "Der Bundesrat beantragt die Annahme der Motion.", 1, 0)
 
 # # #################################################################################
+# resave for assumptions
+saveRDS(motions_polarization, "data/motions_polarization_with_lr_ap_inverted_controls.rds")
+
+
+# # #################################################################################
 # testing
 
 lm1 <- lm(motions_polarization$yes_votes ~ motions_polarization$lr_distance_normalized)
