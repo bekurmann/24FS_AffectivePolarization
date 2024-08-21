@@ -7,9 +7,9 @@ motions_polarization <- readRDS("data/motions_polarization_with_lr_ap_inverted_c
 
 # models
 lm1 <- lm(motions_polarization$yes_votes ~ motions_polarization$lr_distance_normalized)
-lm2 <- lm(motions_polarization$yes_votes ~ motions_polarization$ap_score_normalized)
+lm2 <- lm(motions_polarization$yes_votes ~ motions_polarization$ap_score_normalized2)
 lm3 <- lm(motions_polarization$yes_votes ~ 
-            motions_polarization$ap_score_normalized + 
+            motions_polarization$ap_score_normalized2 + 
             motions_polarization$lr_distance_normalized +
             motions_polarization$FederalCouncilProposalEncoded +
             motions_polarization$multiple_councils)
@@ -108,7 +108,7 @@ print(vif_lm3)
 
 # Subset the independent variables used in lm3
 independent_vars <- motions_polarization %>%
-  select(ap_score_normalized, lr_distance_normalized, FederalCouncilProposalEncoded, multiple_councils)
+  select(ap_score_normalized2, lr_distance_normalized, FederalCouncilProposalEncoded, multiple_councils)
 
 # Calculate and print the correlation matrix
 cor_matrix <- cor(independent_vars, use = "complete.obs")
