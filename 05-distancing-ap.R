@@ -1,35 +1,16 @@
 library(tidyverse)
 
+# Load the existing data
 motions_polarization <- readRDS("data/motions_polarization_with_lr.rds")
 
-# #################################################################################
 # Prerequisites
-
-# seats per party per legislative period
 seat_counts_by_legislative_period <- list(
   "50" = c(GRÜNE = 11, SP = 55, GLP = 7, Mitte = 34, FDP = 33, SVP = 65),
   "51" = c(GRÜNE = 28, SP = 53, GLP = 16, Mitte = 28, FDP = 29, SVP = 53)
 )
 
-# Function to retrieve seat counts for a given legislative period per party
-get_seat_count <- function(data, legislative_period, party) {
-  if (!legislative_period %in% names(data)) {
-    stop("Invalid legislative period. Please choose a valid one.")
-  }
-  
-  if (!party %in% names(data[[legislative_period]])) {
-    stop("Invalid party name. Please choose a valid one.")
-  }
-  
-  data[[legislative_period]][[party]]
-}
-
-# Example usage:
-# get_seat_count(seat_counts_by_legislative_period, "50", "SP")
-
-# #################################################################################
-# ap matrix
-
+# ######################################################################################
+# Affective Polarization Matrix
 like_dislike_matrix <- data.frame(
   GRÜNE = c(mean(c(87, 94, 89)), mean(c(73, 80, 72)), mean(c(66, 59)), mean(c(44.9, 50, 36)), mean(c(32, 38, 30)), mean(c(27, 28, 17))), 
   SP = c(mean(c(77, 82, 76)), mean(c(81, 92, 89)), mean(c(64, 56)), mean(c(45.3, 52, 39)), mean(c(33, 44, 32)), mean(c(31, 34, 22))),
@@ -50,12 +31,8 @@ like_dislike_matrix2 <- data.frame(
   row.names = c("GRÜNE", "SP", "GLP", "Mitte", "FDP", "SVP")
 )
 
-
-# #################################################################################
-# ap matrix 1
-
-# Function to calculate affective polarization
-
+# ######################################################################################
+# Function to calculate affective polarization (1 with sotomo)
 calculate_affective_polarization <- function(involved_parties, legislative_period) {
   if (!legislative_period %in% names(seat_counts_by_legislative_period)) {
     stop("Legislative period not found in seat counts list.")
@@ -74,44 +51,29 @@ calculate_affective_polarization <- function(involved_parties, legislative_perio
   
   # Calculate score for involved parties
   for (party in involved_parties) {
-    # Debugging print for involved parties scores
     score_for_self <- like_dislike_matrix[party, party]
-    print(paste("Score for", party, "to self:", score_for_self))
     calculated_score <- seats[[party]] * score_for_self
-    print(paste("Calculated score for", party, ":", calculated_score))
-    
     total_score <- total_score + calculated_score
   }
   
   # Calculate score for non-involved parties
   non_involved_parties <- setdiff(all_parties, involved_parties)
   for (party in non_involved_parties) {
-    # Extract scores for debugging
     scores <- like_dislike_matrix[party, involved_parties]
-    print(paste("Extracted scores for", party, "to", toString(involved_parties), ":", toString(scores)))
-    
-    # Calculate average score of involved parties to this non-involved party
     avg_score <- mean(as.numeric(unlist(scores)), na.rm = TRUE)
-    print(paste("Average score for", party, ":", avg_score))
     
-    if (is.na(avg_score)) {  # Check for NA in average calculation
-      print(paste("Failed to calculate average for", party, "using scores:", toString(scores)))
+    if (is.na(avg_score)) {
       avg_score <- 0
     }
     calculated_score = seats[[party]] * avg_score
-    print(paste("Calculated weighted average score for", party, ":", calculated_score))
-    
     total_score <- total_score + calculated_score
   }
   
   return(total_score)
 }
 
-# #################################################################################
-# ap matrix 2
-
-# Function to calculate affective polarization
-
+# ######################################################################################
+# Function to calculate affective polarization (1 without sotomo)
 calculate_affective_polarization2 <- function(involved_parties, legislative_period) {
   if (!legislative_period %in% names(seat_counts_by_legislative_period)) {
     stop("Legislative period not found in seat counts list.")
@@ -130,76 +92,70 @@ calculate_affective_polarization2 <- function(involved_parties, legislative_peri
   
   # Calculate score for involved parties
   for (party in involved_parties) {
-    # Debugging print for involved parties scores
     score_for_self <- like_dislike_matrix2[party, party]
-    print(paste("Score for", party, "to self:", score_for_self))
     calculated_score <- seats[[party]] * score_for_self
-    print(paste("Calculated score for", party, ":", calculated_score))
-    
     total_score <- total_score + calculated_score
   }
   
   # Calculate score for non-involved parties
   non_involved_parties <- setdiff(all_parties, involved_parties)
   for (party in non_involved_parties) {
-    # Extract scores for debugging
     scores <- like_dislike_matrix2[party, involved_parties]
-    print(paste("Extracted scores for", party, "to", toString(involved_parties), ":", toString(scores)))
-    
-    # Calculate average score of involved parties to this non-involved party
     avg_score <- mean(as.numeric(unlist(scores)), na.rm = TRUE)
-    print(paste("Average score for", party, ":", avg_score))
     
-    if (is.na(avg_score)) {  # Check for NA in average calculation
-      print(paste("Failed to calculate average for", party, "using scores:", toString(scores)))
+    if (is.na(avg_score)) {
       avg_score <- 0
     }
     calculated_score = seats[[party]] * avg_score
-    print(paste("Calculated weighted average score for", party, ":", calculated_score))
-    
     total_score <- total_score + calculated_score
   }
   
   return(total_score)
 }
 
-# Example usage
-print(calculate_affective_polarization("Mitte, GRÜNE, SP, SVP", "50"))
-print(calculate_affective_polarization("Mitte, FDP, SP", "50"))
-print(calculate_affective_polarization("SVP", "50"))
-
-# #################################################################################
-# Adding the new column(s)
-
+# ######################################################################################
+# Adding the new column(s) with the original AP score
 motions_polarization <- motions_polarization %>%
   rowwise() %>%
   mutate(ap_score_total = calculate_affective_polarization(involved_parties, as.character(SubmissionLegislativePeriod)))
 
-# Min-max normalization
-min_score <- min(motions_polarization$ap_score_total, na.rm = TRUE)
+# Inverting the AP score to make higher scores indicate higher polarization
 max_score <- max(motions_polarization$ap_score_total, na.rm = TRUE)
+motions_polarization <- motions_polarization %>%
+  mutate(ap_score_total_inverted = max_score - ap_score_total)
+
+# Min-max normalization on the inverted scores
+min_score <- min(motions_polarization$ap_score_total_inverted, na.rm = TRUE)
+max_score <- max(motions_polarization$ap_score_total_inverted, na.rm = TRUE)
 
 motions_polarization <- motions_polarization %>%
   mutate(
-    ap_score_normalized = (ap_score_total - min_score) / (max_score - min_score)
+    ap_score_normalized = (ap_score_total_inverted - min_score) / (max_score - min_score)
   )
 
-#######
-
+# #########################
 motions_polarization <- motions_polarization %>%
   rowwise() %>%
   mutate(ap_score_total2 = calculate_affective_polarization2(involved_parties, as.character(SubmissionLegislativePeriod)))
 
-# Min-max normalization
-min_score <- min(motions_polarization$ap_score_total2, na.rm = TRUE)
-max_score <- max(motions_polarization$ap_score_total2, na.rm = TRUE)
+# Inverting the AP score to make higher scores indicate higher polarization
+max_score2 <- max(motions_polarization$ap_score_total2, na.rm = TRUE)
+motions_polarization <- motions_polarization %>%
+  mutate(ap_score_total_inverted2 = max_score2 - ap_score_total2)
+
+# Min-max normalization on the inverted scores
+min_score2 <- min(motions_polarization$ap_score_total_inverted2, na.rm = TRUE)
+max_score2 <- max(motions_polarization$ap_score_total_inverted2, na.rm = TRUE)
 
 motions_polarization <- motions_polarization %>%
   mutate(
-    ap_score_normalized2 = (ap_score_total2 - min_score) / (max_score - min_score)
+    ap_score_normalized2 = (ap_score_total_inverted2 - min_score2) / (max_score2 - min_score2)
   )
 
+# ######################################################################################
 
-# #################################################################################
-# saving
-saveRDS(motions_polarization, "data/motions_polarization_with_lr_ap.rds")
+# Save the updated dataframe
+saveRDS(motions_polarization, "data/motions_polarization_with_lr_ap_inverted.rds")
+
+# Print the updated dataframe to check the new columns
+print(motions_polarization)
