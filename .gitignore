@@ -2,7 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-data/
 data/businesses.rds
 data/members_council.rds
 data/motions_final.rds
@@ -11,5 +10,7 @@ data/roles.rds
 data/statuses.rds
 data/votes.rds
 data/votings.rds
+data/motions_polarization_with_lr_ap.rds
+data/motions_polarization_with_lr.rds
 business_50_51/
 voting_50_51/

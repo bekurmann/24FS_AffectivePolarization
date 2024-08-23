@@ -151,13 +151,31 @@ lrdistance_apscore <- motions_polarization %>%
   labs(
     x = "Normalized L/R Distance",
     y = "Normalized AP Score",
-    title = "Normalized AP Score ~ Normalized L/R Distance",
+    title = "Normalized AP Score ~ Normalized L/R Distance (without Sotomo)",
     color = "failed/passed"
   )
 
 # save
 ggsave(filename = "img/lrdistance_apscore.png", plot = lrdistance_apscore, width = 8, height = 6, dpi = 300)
 
+# # #################################################################################
+# lr_distance ~ ap_score (with sotomo)
+lrdistance_apscore_sotomo <- motions_polarization %>%
+  ggplot(aes(x = lr_distance_normalized, y = ap_score_normalized, color = passed)) +
+  geom_point(alpha = 0.7, size = 3) +
+  geom_smooth(method = "lm", se = TRUE,
+              aes(group = 1),
+              color = "black") +
+  theme_minimal() +
+  labs(
+    x = "Normalized L/R Distance",
+    y = "Normalized AP Score",
+    title = "Normalized AP Score ~ Normalized L/R Distance (with Sotomo)",
+    color = "failed/passed"
+  )
+
+# save
+ggsave(filename = "img/lrdistance_apscore_sotomo.png", plot = lrdistance_apscore_sotomo, width = 8, height = 6, dpi = 300)
 
 # # #################################################################################
 # all subsets without sotomo (matrix2)
