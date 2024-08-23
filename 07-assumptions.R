@@ -16,64 +16,42 @@ lm3 <- lm(motions_polarization$yes_votes ~
 
 
 # # #################################################################################
-# linearity
-par(mfrow = c(1, 3))  # Set up the plot layout
+# Set up the file to save the image
+png(filename = "img/linearity_homoscedasticity.png", width = 1200, height = 600)
 
+# Set up the plot layout to have 1 row and 3 columns
+par(mfrow = c(1, 3))  
+
+# Plot 1
 plot(lm1$fitted.values, lm1$residuals,
-     main = "Linearity Check for lm1",
+     main = "Linearity / Homoscedasticity Check for lm1",
      xlab = "Fitted Values",
      ylab = "Residuals")
 abline(h = 0, col = "red")
 
+# Plot 2
 plot(lm2$fitted.values, lm2$residuals,
-     main = "Linearity Check for lm2",
+     main = "Linearity / Homoscedasticity Check for lm2",
      xlab = "Fitted Values",
      ylab = "Residuals")
 abline(h = 0, col = "red")
 
+# Plot 3
 plot(lm3$fitted.values, lm3$residuals,
-     main = "Linearity Check for lm3",
+     main = "Linearity / Homoscedasticity Check for lm3",
      xlab = "Fitted Values",
      ylab = "Residuals")
 abline(h = 0, col = "red")
 
+# Close the graphical device
+dev.off()
 
 # # #################################################################################
-# homoscedasticity (constant variance of residuals «Varianzhomogenität»)
+# Set up the file to save the image
+png(filename = "img/normality.png", width = 1200, height = 600)
 
-par(mfrow = c(1, 3))  # Set up the plot layout
-
-plot(lm1$fitted.values, lm1$residuals,
-     main = "Homoscedasticity Check for lm1",
-     xlab = "Fitted Values",
-     ylab = "Residuals")
-abline(h = 0, col = "red")
-
-plot(lm2$fitted.values, lm2$residuals,
-     main = "Homoscedasticity Check for lm2",
-     xlab = "Fitted Values",
-     ylab = "Residuals")
-abline(h = 0, col = "red")
-
-plot(lm3$fitted.values, lm3$residuals,
-     main = "Homoscedasticity Check for lm3",
-     xlab = "Fitted Values",
-     ylab = "Residuals")
-abline(h = 0, col = "red")
-
-
-# # #################################################################################
 # normality of residuals
 par(mfrow = c(1, 3))  # Set up the plot layout
-
-qqnorm(lm1$residuals, main = "Q-Q Plot for lm1")
-qqline(lm1$residuals, col = "red")
-
-qqnorm(lm2$residuals, main = "Q-Q Plot for lm2")
-qqline(lm2$residuals, col = "red")
-
-qqnorm(lm3$residuals, main = "Q-Q Plot for lm3")
-qqline(lm3$residuals, col = "red")
 
 # Histograms
 hist(lm1$residuals, breaks = 20, main = "Histogram of lm1 Residuals", xlab = "Residuals", col = "lightblue")
@@ -81,11 +59,8 @@ hist(lm2$residuals, breaks = 20, main = "Histogram of lm2 Residuals", xlab = "Re
 hist(lm3$residuals, breaks = 20, main = "Histogram of lm3 Residuals", xlab = "Residuals", col = "lightblue")
 
 
-# Shapiro-Wilk Test
-shapiro.test(lm1$residuals)
-shapiro.test(lm2$residuals)
-shapiro.test(lm3$residuals)
-
+# Close the graphical device
+dev.off()
 
 # # #################################################################################
 # multicollinearity (only lm3)
